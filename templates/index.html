@@ -1,0 +1,47 @@
+{% load static %}
+{% load django_bootstrap5 %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
+    <meta charset="UTF-8">
+    <title>Gallery</title>
+</head>
+
+<body>
+<div class="container">
+    <h1>Gallery</h1>
+    <form action="" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {% bootstrap_form form %}
+        <button type="submit" class="btn btn-primary">
+            Submit
+        </button>
+    </form>
+
+    <div class="row row-cols-md-3">
+        {% for post in posts %}
+            <div class="col-md">
+                <div class="card h-100">
+                    <img class="card-img-top" src="{{ post.image.url }}" alt="{{ post.title }}">
+                    <div class="card-body border-top border-3">
+                        <h5 class="card-title">{{ post.title }}</h5>
+                        <p class="card-text">{{ post.description }}</p>
+                    </div>
+                    <div class="card-footer">
+                        <form action="{% url 'gallery:delete' post.id %}" method="post">
+                            {% csrf_token %}
+                            <button class="btn btn-danger w-100 h-100" type="submit">
+                                Delete
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+</body>
+</html>
