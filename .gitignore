@@ -611,3 +611,40 @@ cython_debug/
 
 ### Personal
 config.json
+
+### Postgres
+*.sql
+*.dump
+*.backup
+*.db
+*.sqlite
+*.sqlite3
+*.psql
+*.pgpass
+pg_service.conf
+.pg_service.conf
+.pgpass.conf
+.pgadmin/
+pgadmin4/
+.pgadmin4/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.pdb
+*.lib
+*.obj
+*.dll
+*.exe
+*.log
+*.out
+*.err
+*.pid
+*.seed
+*.pid.lock
+*.swp
+*.swo
+*.bak
+*.tmp
+*.old
+data/
