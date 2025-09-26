@@ -74,21 +74,33 @@ WSGI_APPLICATION = 'gallerysite.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'gallery',
+#         'USER': 'manager',
+#         'PASSWORD': 'aSQucwuVvu6hEwwF',
+#         'OPTIONS': {
+#             'init_command': 'SET default_storage_engine=INNODB',
+#         }
+#     },
+#     'azure': {
+#         'BACKEND': 'storages.backends.azure_storage.AzureStorage'
+#     }
+# }
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'gallery',
-        'USER': 'manager',
-        'PASSWORD': 'aSQucwuVvu6hEwwF',
-        'OPTIONS': {
-            'init_command': 'SET default_storage_engine=INNODB',
-        }
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.environ.get('POSTGRES_NAME'),
+        'USER': os.environ.get('POSTGRES_USER'),
+        'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
+        'HOST': os.environ.get('POSTGRES_HOST', 'localhost'),
+        'PORT': os.environ.get('POSTGRES_PORT', '5432'),
+        # 'OPTIONS': {
+            # 'init_command': 'SET default_storage_engine=INNODB',
+        # }
     },
-    'azure': {
-        'BACKEND': 'storages.backends.azure_storage.AzureStorage'
-    }
 }
-
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 
@@ -131,8 +143,8 @@ MEDIA_URL = 'media/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Azure settings
-with open(os.path.join(BASE_DIR, "config.json"), "r", encoding="utf-8") as f:
-    CONFIG = json.load(f)
-AZURE_CONNECTION_STRING = CONFIG["connection_string"]
-AZURE_CONTAINER = CONFIG["container"]
-ALLOWED_HOSTS += [CONFIG["ip"]]
+# with open(os.path.join(BASE_DIR, "config.json"), "r", encoding="utf-8") as f:
+#     CONFIG = json.load(f)
+# AZURE_CONNECTION_STRING = CONFIG["connection_string"]
+# AZURE_CONTAINER = CONFIG["container"]
+# ALLOWED_HOSTS += [CONFIG["ip"]]

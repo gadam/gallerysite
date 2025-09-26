@@ -1,5 +1,6 @@
 django>=5.0
-django-storages[azure]>=1.14
+# django-storages[azure]>=1.14
 django-bootstrap5>=23.3
-MySQLClient>=2.1
+# MySQLClient>=2.1
 Pillow>=10.1
+psycopg2-binary>=2.9
