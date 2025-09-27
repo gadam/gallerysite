@@ -1,0 +1,72 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gallery-django
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gallery-django
+  template:
+    metadata:
+      labels:
+        app: gallery-django
+    spec:
+      containers:
+        - name: django
+          image: jaga/gallerysite-web:latest
+          imagePullPolicy: IfNotPresent
+          command: ["/bin/sh","-c","python manage.py migrate && python manage.py runserver 0.0.0.0:8000"]
+          env:
+            - name: POSTGRES_HOST
+              value: gallery-postgres
+            - name: POSTGRES_PORT
+              value: "5432"
+            - name: ALLOWED_HOSTS
+              value: "*"
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: gallery-db-secret
+                  key: POSTGRES_DB
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: gallery-db-secret
+                  key: POSTGRES_USER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: gallery-db-secret
+                  key: POSTGRES_PASSWORD
+          ports:
+            - containerPort: 8000
+          volumeMounts:
+            - name: media-storage
+              mountPath: /app/media/images
+          readinessProbe:
+            tcpSocket:
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+      initContainers:
+        - name: wait-for-db
+          image: busybox:1.36.1
+          command:
+            - /bin/sh
+            - -c
+            - |
+              set -e
+              echo "Waiting for Postgres..."
+              until nc -z ${POSTGRES_HOST:-gallery-postgres} ${POSTGRES_PORT:-5432}; do
+                sleep 2
+              done
+          env:
+            - name: POSTGRES_HOST
+              value: gallery-postgres
+            - name: POSTGRES_PORT
+              value: "5432"
+      volumes:
+        - name: media-storage
+          persistentVolumeClaim:
+            claimName: django-media-pvc

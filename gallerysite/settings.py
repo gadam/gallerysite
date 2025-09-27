@@ -25,7 +25,19 @@ SECRET_KEY = 'django-insecure-4z40d96@_66=fe7@qw405m6e0ixn+@&&az#kzbbkm&wz7mhcdj
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+# Allow configuring allowed hosts via environment variable. If not provided,
+# default to localhost and 127.0.0.1. The environment variable can be:
+# - '*' to allow all hosts (use for testing only)
+# - a comma-separated list of hosts
+al_hosts = os.environ.get('ALLOWED_HOSTS')
+if al_hosts:
+    if al_hosts.strip() == '*':
+        ALLOWED_HOSTS = ['*']
+    else:
+        # split on commas and strip whitespace
+        ALLOWED_HOSTS = [h.strip() for h in al_hosts.split(',') if h.strip()]
+else:
+    ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
 # Application definition
 
