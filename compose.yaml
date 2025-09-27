@@ -1,0 +1,47 @@
+services:
+  # 1. PostgreSQL Database Service
+  db:
+    image: postgres:17.6-alpine3.21 # Use a lightweight, stable PostgreSQL image
+    container_name: db
+    environment:
+      # These variables are required for the PostgreSQL image to initialize the database
+      - POSTGRES_DB=postgres
+      - POSTGRES_NAME=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      # Persistent storage for the database data
+      - ./db:/var/lib/postgresql/data
+    ports:
+      - "5432:5432" # Optional: Expose the DB port for local testing/management
+
+
+  # 2. Django Gallery Application Service
+  web:
+    build: . # Use Dockerfile in the same directory to build application image
+    container_name: gallery
+    command: sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      # Mount project code (local directory to container path)
+      - .:/app
+      # Persistent storage for image uploads (uses 'media/images/' folder)
+      - django_media:/app/media/images/ # This mounts the external volume to your desired upload path
+    ports:
+      - "8000:8000"
+    environment:
+      # Environment variables for Django settings.py to connect to the DB
+      - POSTGRES_HOST=db           # The name of the network bridge
+      - POSTGRES_NAME=postgres     # Database name
+      - POSTGRES_USER=postgres     # Database user
+      - POSTGRES_PASSWORD=postgres # Must match the password in the 'db' service
+      - POSTGRES_PORT=5432
+    depends_on:
+      # Ensure the DB service is running
+      - db
+    
+# External Volumes for Persistence
+volumes:
+  # Stores the actual PostgreSQL database files
+  db:
+  # Stores the uploaded Django images (the contents of the 'images/' folder)
+  django_media:
