@@ -648,3 +648,4 @@ __pycache__/
 *.tmp
 *.old
 data/
+db/
