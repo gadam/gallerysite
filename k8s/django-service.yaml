@@ -10,5 +10,3 @@ spec:
       port: 8000
       targetPort: 8000
   type: ClusterIP
-
-# To expose externally for testing you can change `type: NodePort` and add `nodePort: 30080` under the port
